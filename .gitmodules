@@ -1,0 +1,3 @@
+[submodule "vc_validate"]
+	path = vc_validate
+	url = git@github.com:hmarkus/vc_validate.git
