@@ -1,6 +1,8 @@
 #ifndef LP_H
 #define LP_H
+
 #include<vector>
+
 #include "vc.h"
 
 struct Constraint {

@@ -3,7 +3,7 @@
 
 #include "vc.h"
 
-std::vector<std::unordered_set<int>> read_input();
+Graph read_input();
 
 void write_output(int n, const std::vector<int>& sol);
 

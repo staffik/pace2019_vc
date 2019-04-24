@@ -6,14 +6,14 @@
 
 #include "vc.h"
 
-std::vector<std::unordered_set<int>> read_input() {
+Graph read_input() {
     std::string line;
     int phase = 0;
     int n, m, x, y;
-    // std::vector<std::vector<int>> G;
-    std::vector<std::unordered_set<int>> G;
+
+    Graph G;
     // phase 0: p td n m (n - no. vertices, m - no. edges)
-    // phase 1: x y (endpoints) 
+    // phase 1: x y (endpoints)
     while(true) {
         if(!std::cin) {
             break;
@@ -32,7 +32,6 @@ std::vector<std::unordered_set<int>> read_input() {
         } else { // phase = 1
             assert(line[0] == 'p');
             std::sscanf(line.c_str(), "%*s %*s %d %d", &n, &m);
-            G.resize(n);
             phase++;
         }
     }

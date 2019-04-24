@@ -1,10 +1,12 @@
 #ifndef VC_CPP
 #define VC_CPP
+
 #include<vector>
-#include<unordered_set>
 
-typedef std::vector<std::unordered_set<int>> Graph;
+#include "graph.h"
 
-Graph preprocess(Graph G, int k);
+typedef std::tuple<Graph, int, std::vector<int>> VC;
+
+VC remove_high_deg_nodes(VC vc);
 
 #endif
