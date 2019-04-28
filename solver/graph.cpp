@@ -1,6 +1,17 @@
 #include "graph.h"
 #include<algorithm>
 
+std::ostream& operator<<(std::ostream& ostr, Graph& G) {
+	for(auto x: G) {
+		ostr << x.first << ": ";
+		for(auto y: x.second) {
+			ostr << y << " ";
+		}
+		ostr << "\n";
+	}
+	return ostr;
+}
+
 size_t max_deg(const Graph& G) {
 	size_t res = 0;
 	for(auto x: G) {

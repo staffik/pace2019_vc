@@ -72,6 +72,7 @@ int main() {
 	auto res = solve({G, beg, {}});
 
 	// Write output
+
     auto partial_solution = std::get<2>(res);
 	DBG(assert(partial_solution.size() == beg));
     std::cout << partial_solution.size() << "\n";

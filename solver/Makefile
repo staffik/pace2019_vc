@@ -1,3 +1,5 @@
+CFLAGS=-g
+
 objects = vc.o lp.o io.o graph.o hopcroft_carp.o kernel_2k.o
 
 main: $(objects)

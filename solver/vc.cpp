@@ -1,3 +1,4 @@
+#include<cassert>
 #include<iostream>
 #include<map>
 #include<set>
@@ -66,12 +67,99 @@ VC remove_high_deg_nodes(VC vc) {
             deg_node[neigh_deg-1].insert(neigh);
         }
 
+        G.erase(node);
         node_deg[node] = 0;
         deg_node[deg].erase(node);
         if(deg_node[deg].empty()) {
             deg_node.erase(deg);
         }
         deg_node[0].insert(node);
+    }
+
+    return {G, k, partial_solution};
+}
+
+VC solve_deg2(VC vc) {
+    Graph G;
+    int k;
+    std::vector<int> partial_solution;
+    std::tie(G, k, partial_solution) = vc;
+    // solve the graph with deg <= 2. method doesn't modify the input graph
+    assert(max_deg(G) <= 2);
+
+    // node to degree mapping
+    std::unordered_map<int, int> node_deg;
+    // degree to set of nodes mapping
+    std::map<int, std::unordered_set<int>> deg_node;
+
+    int deg;
+    for(size_t i = 0; i < G.size(); i++) {
+        deg = G[i].size();
+        node_deg[i] = deg;
+        deg_node[deg].insert(i);
+    }
+
+    while(true) {
+        // if there is a leaf add it's neighbour to partial solution and continue
+        if(deg_node.at(1).size()) {
+            auto node = *deg_node.at(1).begin();
+            auto neigh = *G[node].begin();
+            // remove all the edges from the neighbour
+            auto vertices = G.at(neigh);
+            for(auto x: vertices) {
+                G[neigh].erase(x);
+                G[x].erase(neigh);
+
+                auto x_deg = node_deg[x];
+                deg_node[x_deg].erase(x);
+                x_deg--;
+                deg_node[x_deg].insert(x);
+
+                auto neigh_deg = node_deg[neigh];
+                deg_node[neigh_deg].erase(neigh);
+                neigh_deg--;
+                deg_node[neigh_deg].insert(neigh);
+            }
+            G.erase(node);
+            G.erase(neigh);
+            partial_solution.push_back(neigh);
+        }
+        // no leafs, just cycles
+        else if(deg_node.at(2).size()) {
+            auto node = *deg_node.at(2).begin();
+            std::vector<int> path = {node};
+            int prev, curr = *G[node].begin(), next;
+            while(true) {
+                prev = path[path.size()-1];
+                path.push_back(curr);
+                for(auto x: G[curr]) {
+                    if(x != prev) {
+                        next = x;
+                        break;
+                    }
+                }
+                if(next == node) {
+                    break;
+                }
+                curr = next;
+            }
+            int take = true;
+            for(const auto x: path) {
+                if(take) {
+                    partial_solution.push_back(x);
+                }
+                take ^= true;
+            }
+            // remove all vertices on path and adjust degrees
+            for(const auto x: path) {
+                G.erase(x);
+                node_deg.erase(x);
+                deg_node[2].erase(x);
+            }
+        }
+        else {
+            break;
+        }
     }
 
     return {G, k, partial_solution};
