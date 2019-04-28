@@ -23,6 +23,21 @@ Graph induced_subgraph(const Graph& G, const std::unordered_set<int>& vertices) 
 	return induced;
 }
 
+void remove_single_vertex(Graph &G, int u) {
+	for(auto v : G[u]) {
+		G[v].erase(u);
+		if(G[v].empty())
+			G.erase(v);
+	}
+	G.erase(u);
+}
+
+Graph difference(Graph G, std::unordered_set<int> to_remove) {
+	for(auto u : to_remove)
+		remove_single_vertex(G, u);
+	return G;
+}
+
 // assume G is 0 based, constructed graph is 1-based
 GraphAdj::GraphAdj(const Graph &G) {
 	for(const auto& x: G) {

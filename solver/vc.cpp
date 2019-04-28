@@ -7,6 +7,11 @@
 
 #include "vc.h"
 
+bool successfull(const VC &res) {
+	// The graph is empty and K >= 0
+	return std::get<0>(res).empty() && std::get<1>(res)>=0;
+}
+
 VC remove_high_deg_nodes(VC vc) {
     Graph G;
     int k;
