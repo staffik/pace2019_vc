@@ -32,7 +32,7 @@ Graph read_input() {
         } else { // phase = 0
             assert(line[0] == 'p');
             std::sscanf(line.c_str(), "%*s %*s %d %d", &n, &m);
-            G.init(n);
+            // G.init(n);
             phase++;
         }
     }
