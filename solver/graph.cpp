@@ -19,16 +19,13 @@ unsigned Graph::size() {
 	return n;
 }
 
-BipartiteGraph::BipartiteGraph(const Graph &G) {
+// assume G is 0 based, constructed graph is 1-based
+GraphAdj::GraphAdj(const Graph &G) {
 	n = G.n;
-	for(int i=0; i<2; ++i) {
-		adj[i].clear();
-		adj[i].resize(n);
-	}
+	adj.resize(n+1);
 	for(int u=0; u<n; ++u) {
 		for(auto v: G.adj[u]) {
-			adj[0][u].push_back(v);
-			adj[1][u].push_back(v);
+			adj[u+1].push_back(v+1);
 		}
 	}
 }

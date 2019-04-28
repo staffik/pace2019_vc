@@ -15,13 +15,13 @@ struct Graph {
 	unsigned size();
 };
 
-struct BipartiteGraph {
+struct GraphAdj {
 	using vi = std::vector<int>;
 
-	BipartiteGraph(const Graph &G);
+	GraphAdj(const Graph &G);
 
 	int n;
-	std::vector<vi> adj[2];
+	std::vector<vi> adj;
 };
 
 #endif // GRAPH_H
