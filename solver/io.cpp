@@ -29,9 +29,10 @@ Graph read_input() {
             y--;
             G[x].insert(y);
             G[y].insert(x);
-        } else { // phase = 1
+        } else { // phase = 0
             assert(line[0] == 'p');
             std::sscanf(line.c_str(), "%*s %*s %d %d", &n, &m);
+            G.init(n);
             phase++;
         }
     }
