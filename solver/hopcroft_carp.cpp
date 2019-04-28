@@ -1,14 +1,16 @@
 #include "hopcroft_carp.h"
 
+#include <assert.h>
+#include <queue>
+
 #include "graph.h"
+
+#define DBG(code) code
 
 const int INF = 1e9;
 
-std::pair<std::vector<int>, std::vector<int>> hopcroft_carp::getVertexCover() {
-	return vc;
-}
 
-hopcroft_carp::hopcroft_carp(GraphAdj BG)
+hopcroft_carp::hopcroft_carp(const GraphAdj &BG) : BG(BG) {
 	n = m = BG.n;
 
 	pairU.clear();
@@ -87,7 +89,7 @@ void hopcroft_carp::alternate(int u) {
 		if(!vis[1][v]) {
 			vis[1][v]=true;
 			int w = pairV[v];
-			assert(w>0);
+			DBG(assert(w>0));
 			alternate(w);
 		}
 	}
@@ -114,5 +116,5 @@ void hopcroft_carp::calculateVertexCover() {
 	for(int i=1; i<=m; ++i) {
 		if(vis[1][i]) vc.second.push_back(i);
 	}
-	assert(result == vc.first.size() + vc.second.size());
+	DBG(assert(result == vc.first.size() + vc.second.size()));
 }
