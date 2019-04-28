@@ -1,8 +1,12 @@
 #include "kernel_2k.h"
 
+#include <unordered_set>
+
 #include "hopcroft_carp.h"
 
-std::pair<vi, vi> kernel_2k_reduction(const Graph &G) {
+
+// returns pair of lists <do_not_get_to_solution, get_to_solution>
+auto get_half_ones(const Graph &G) {
 	GraphAdj BG(G);
 	hopcroft_carp HC(BG);
 
@@ -22,13 +26,31 @@ std::pair<vi, vi> kernel_2k_reduction(const Graph &G) {
 		V[v]++;
 	}
 
-	vi zeros, ones;
+	std::unordered_set<int> half;
+	std::vector<int> ones;
 	for(int v=0; v<n; ++v) {
-		if(V[v] == 0)
-			zeros.push_back(v);
-		else if(V[v] == 2)
+		if(V[v] == 1)
+			half.insert(v);
+		else if(V[v]==2)
 			ones.push_back(v);
 	}
-	return std::make_pair(zeros, ones);
+	return std::make_tuple(half, ones);
 }
 
+
+VC kernel_2k_reduction(const VC &partVC) {
+	const Graph &G = std::get<0>(partVC);
+	int old_K = std::get<1>(partVC);
+	const auto& oldPartSol = std::get<2>(partVC);
+
+	std::unordered_set<int> remaining;
+	std::vector<int> newPartSol;
+	
+	std::tie(remaining, newPartSol) = get_half_ones(G);
+	auto induced = induced_subgraph(G, remaining);
+	int new_K = old_K - newPartSol.size();
+
+	newPartSol.insert(newPartSol.end(), oldPartSol.begin(), oldPartSol.end());
+
+	return std::make_tuple(induced, new_K, newPartSol);
+}

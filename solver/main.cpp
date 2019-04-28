@@ -2,11 +2,13 @@
 
 #include "graph.h"
 #include "io.h"
+#include "kernel_2k.h"
 #include "lp.h"
 #include "vc.h"
 
 VC solve(VC partSol) {
     auto res = remove_high_deg_nodes(partSol);
+	res = kernel_2k_reduction(res);
 	return res;
 }
 
