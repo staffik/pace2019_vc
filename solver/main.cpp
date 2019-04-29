@@ -49,7 +49,9 @@ VC solve(VC partVC) {
 
 int main() {
 	// Init
-    Graph G = read_input();
+	int n;
+	Graph G;
+    std::tie(n, G) = read_input();
 
 	/*
     std::cout << max_deg(G) << "\n";
