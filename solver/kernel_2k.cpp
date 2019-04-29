@@ -1,10 +1,13 @@
 #include "kernel_2k.h"
 
+#include <assert.h>
+#include <iostream>
 #include <unordered_set>
 
-#include "hopcroft_carp.h"
-#include <iostream>
 #include "graph.h"
+#include "hopcroft_carp.h"
+
+#define DBG(code) code
 
 
 // returns pair of lists <do_not_get_to_solution, get_to_solution>
@@ -54,5 +57,8 @@ VC kernel_2k_reduction(const VC &partVC) {
 
 	newPartSol.insert(newPartSol.end(), oldPartSol.begin(), oldPartSol.end());
 
+	if(induced.size() > 2 * new_K) {
+		new_K = -1; // 2*K < |LPVC_opt| <= |VC_opt|
+	}
 	return std::make_tuple(induced, new_K, newPartSol);
 }

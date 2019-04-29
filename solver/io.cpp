@@ -21,7 +21,7 @@ std::pair<int, Graph> read_input() {
         }
         std::getline(std::cin, line);
         if(line[0] == 'c') {
-            std::cout << line << std::endl;
+            std::cerr << line << std::endl;
             continue;
         }
         if(phase == 1) {
