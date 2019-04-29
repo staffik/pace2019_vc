@@ -116,7 +116,7 @@ VC solve_deg2(VC vc) {
 
     while(true) {
         // if there is a leaf add it's neighbour to partial solution and continue
-        if(deg_node.at(1).size()) {
+        if(deg_node[1].size()) {
             auto node = *deg_node.at(1).begin();
             auto neigh = *G[node].begin();
             // remove all the edges from the neighbour
@@ -138,9 +138,10 @@ VC solve_deg2(VC vc) {
             G.erase(node);
             G.erase(neigh);
             partial_solution.push_back(neigh);
+            k--;
         }
         // no leafs, just cycles
-        else if(deg_node.at(2).size()) {
+        else if(deg_node[2].size()) {
             auto node = *deg_node.at(2).begin();
             std::vector<int> path = {node};
             int prev, curr = *G[node].begin(), next;
@@ -162,6 +163,7 @@ VC solve_deg2(VC vc) {
             for(const auto x: path) {
                 if(take) {
                     partial_solution.push_back(x);
+                    k--;
                 }
                 take ^= true;
             }
@@ -171,6 +173,60 @@ VC solve_deg2(VC vc) {
                 node_deg.erase(x);
                 deg_node[2].erase(x);
             }
+        }
+        else {
+            break;
+        }
+    }
+
+    return {G, k, partial_solution};
+}
+
+VC remove_leaves(VC vc) {
+    Graph G;
+    int k;
+    std::vector<int> partial_solution;
+    std::tie(G, k, partial_solution) = vc;
+
+    // node to degree mapping
+    std::unordered_map<int, int> node_deg;
+    // degree to set of nodes mapping
+    std::map<int, std::unordered_set<int>> deg_node;
+
+    int deg;
+    for(size_t i = 0; i < G.size(); i++) {
+        deg = G[i].size();
+        node_deg[i] = deg;
+        deg_node[deg].insert(i);
+    }
+
+    while(true) {
+        // if there is a leaf add it's neighbour to partial solution and continue
+        if(deg_node[1].size()) {
+            auto node = *deg_node.at(1).begin();
+            auto neigh = *G[node].begin();
+            // remove all the edges from the neighbour
+            auto vertices = G.at(neigh);
+            for(auto x: vertices) {
+                G[neigh].erase(x);
+                G[x].erase(neigh);
+
+                auto x_deg = node_deg[x];
+                deg_node[x_deg].erase(x);
+                x_deg--;
+                deg_node[x_deg].insert(x);
+                node_deg[x] = x_deg;
+
+                auto neigh_deg = node_deg[neigh];
+                deg_node[neigh_deg].erase(neigh);
+                neigh_deg--;
+                deg_node[neigh_deg].insert(neigh);
+                node_deg[neigh] = neigh_deg;
+            }
+            G.erase(node);
+            G.erase(neigh);
+            partial_solution.push_back(neigh);
+            k--;
         }
         else {
             break;

@@ -13,5 +13,6 @@ VC remove_high_deg_nodes(VC vc);
 
 bool successfull(const VC &res);
 VC solve_deg2(VC vc);
+VC remove_leaves(VC);
 
 #endif
