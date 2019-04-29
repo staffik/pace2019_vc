@@ -63,7 +63,7 @@ int main() {
 	int beg = 0, mid, end = max_deg(G)+1;
 	while(beg+1<end) {
 		mid = (beg+end)/2;
-		auto res = solve({G, 5, {}});
+		auto res = solve({G, mid, {}});
 		if(successfull(res))
 			beg = mid;
 		else

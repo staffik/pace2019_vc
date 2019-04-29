@@ -3,6 +3,8 @@
 #include <unordered_set>
 
 #include "hopcroft_carp.h"
+#include <iostream>
+#include "graph.h"
 
 
 // returns pair of lists <do_not_get_to_solution, get_to_solution>
@@ -45,7 +47,7 @@ VC kernel_2k_reduction(const VC &partVC) {
 
 	std::unordered_set<int> remaining;
 	std::vector<int> newPartSol;
-	
+
 	std::tie(remaining, newPartSol) = get_half_ones(G);
 	auto induced = induced_subgraph(G, remaining);
 	int new_K = old_K - newPartSol.size();

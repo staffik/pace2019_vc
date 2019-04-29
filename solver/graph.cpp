@@ -1,7 +1,7 @@
 #include "graph.h"
 #include<algorithm>
 
-std::ostream& operator<<(std::ostream& ostr, Graph& G) {
+std::ostream& operator<<(std::ostream& ostr, const Graph& G) {
 	for(auto x: G) {
 		ostr << x.first << ": ";
 		for(auto y: x.second) {
@@ -56,8 +56,10 @@ GraphAdj::GraphAdj(const Graph &G) {
 	}
 	adj.resize(n+1);
 	for(int u=0; u<n; ++u) {
-		for(auto v: G.at(u)) {
-			adj[u+1].push_back(v+1);
+		if(G.find(u) != G.end()) {
+			for(auto v: G.at(u)) {
+				adj[u+1].push_back(v+1);
+			}
 		}
 	}
 }

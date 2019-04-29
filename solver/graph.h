@@ -9,7 +9,7 @@
 typedef std::unordered_map<int, std::unordered_set<int>> Graph;
 size_t max_deg(const Graph&);
 Graph induced_subgraph(const Graph&, const std::unordered_set<int>&);
-std::ostream& operator<<(std::ostream&, Graph&);
+std::ostream& operator<<(std::ostream&, const Graph&);
 
 void remove_single_vertex(Graph &G, int u);
 Graph difference(Graph G, std::unordered_set<int> to_remove);
