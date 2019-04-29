@@ -13,16 +13,36 @@ VC tryBranch(const VC &partVC, std::unordered_set<int> vertices);
 
 // The branching algorithm
 VC branch(VC partVC) {
+	partVC = remove_leaves(partVC);
 	const auto& G = std::get<0>(partVC);
 	const auto& k = std::get<1>(partVC);
 	const auto& partSol = std::get<2>(partVC);
 
+	int m=0, m_deg=0;
+	for(auto& u : G) {
+		m += u.second.size();
+		m_deg = std::max(m_deg, (int)u.second.size());
+	}
+	m /= 2;
+
+	if(k * m_deg < m) return partVC;
+
 	if(G.empty() || k<=0) return partVC;
 
-	auto it = G.begin();
+	if(m_deg<=2) return solve_deg2(partVC);
+
+	//std::cerr<<G.size()<<" "<<m<<" "<<m_deg<<" "<<k<<std::endl;
+
+	// remove random vertex with the highest degree
+	std::vector<Graph::const_iterator> nodes;
+	for(Graph::const_iterator it=G.cbegin(); it!=G.end(); it++)
+		if(it->second.size() == m_deg)
+			nodes.push_back(it);
+	auto it = nodes[rand()%nodes.size()];
+
 	auto firstBranch = tryBranch(partVC, {it->first});
 
-	if(successfull(firstBranch))
+	if(successfull(firstBranch) || k < it->second.size())
 		return firstBranch;
 
 	// second branch
@@ -42,6 +62,7 @@ VC tryBranch(const VC &partVC, std::unordered_set<int> vertices) {
 
 VC solve(VC partVC) {
     auto res = remove_high_deg_nodes(partVC);
+	res = remove_leaves(res);
 	res = kernel_2k_reduction(res);
 	res = branch(res);
 	return res;
