@@ -25,7 +25,8 @@ std::pair<int, Graph> read_input() {
             continue;
         }
         if(phase == 1) {
-            std::sscanf(line.c_str(), "%d %d", &x, &y);
+            if(std::sscanf(line.c_str(), "%d %d", &x, &y) != 2)
+				break;
             x--;
             y--;
             G[x].insert(y);

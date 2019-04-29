@@ -43,10 +43,11 @@ VC remove_high_deg_nodes(VC vc) {
     std::map<int, std::unordered_set<int>> deg_node;
 
     int deg;
-    for(size_t i = 0; i < G.size(); i++) {
-        deg = G[i].size();
-        node_deg[i] = deg;
-        deg_node[deg].insert(i);
+    for(auto& it : G) {
+		int u = it.first;
+        deg = it.second.size();
+        node_deg[u] = deg;
+        deg_node[deg].insert(u);
     }
 
     std::map<int, std::unordered_set<int>>::reverse_iterator deg_node_it;
