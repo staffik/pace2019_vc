@@ -49,7 +49,9 @@ VC solve(VC partVC) {
 
 int main() {
 	// Init
-    Graph G = read_input();
+	int n;
+	Graph G;
+    std::tie(n, G) = read_input();
 
 	/*
     std::cout << max_deg(G) << "\n";
@@ -59,22 +61,22 @@ int main() {
 
 
 	// Binary search
-	// Invariant: beg <= |VC_opt| < end
-	int beg = 0, mid, end = max_deg(G)+1;
+	// Invariant: beg < |VC_opt| <= end
+	int beg = -1, mid, end = n;
 	while(beg+1<end) {
 		mid = (beg+end)/2;
 		auto res = solve({G, mid, {}});
 		if(successfull(res))
-			beg = mid;
-		else
 			end = mid;
+		else
+			beg = mid;
 	}
-	auto res = solve({G, beg, {}});
+	auto res = solve({G, end, {}});
 
 	// Write output
 
     auto partial_solution = std::get<2>(res);
-	DBG(assert(partial_solution.size() == beg));
+	DBG(assert(partial_solution.size() == end));
     std::cout << partial_solution.size() << "\n";
     if(partial_solution.size()) {
         for(const auto node: partial_solution) {
