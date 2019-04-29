@@ -65,6 +65,7 @@ int main() {
 	int beg = -1, mid, end = n;
 	while(beg+1<end) {
 		mid = (beg+end)/2;
+		std::cerr <<"Solving for k = "<<mid<<std::endl;
 		auto res = solve({G, mid, {}});
 		if(successfull(res))
 			end = mid;
@@ -77,6 +78,7 @@ int main() {
 
     auto partial_solution = std::get<2>(res);
 	DBG(assert(partial_solution.size() == end));
+	/*
     std::cout << partial_solution.size() << "\n";
     if(partial_solution.size()) {
         for(const auto node: partial_solution) {
@@ -84,7 +86,8 @@ int main() {
         }
         std::cout << "\n";
     }
+	*/
 
-    // write_output(5, {2, 4});
+    write_output(n, partial_solution);
     return 0;
 }
