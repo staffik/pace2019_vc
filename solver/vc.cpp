@@ -233,6 +233,17 @@ VC remove_leaves(VC vc) {
             break;
         }
     }
+    std::cout << G.size() << "\n";
+    std::vector<int> empty_nodes;
+    for(const auto& x: G) {
+        if(x.second.empty()) {
+            empty_nodes.push_back(x.first);
+        }
+    }
+    for(const auto x: empty_nodes) {
+        G.erase(x);
+    }
+    std::cout << G.size() << "\n";
 
     return {G, k, partial_solution};
 }
