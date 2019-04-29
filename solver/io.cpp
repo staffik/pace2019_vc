@@ -1,12 +1,13 @@
-#include<iostream>
-#include<vector>
-#include<cassert>
-#include<unordered_set>
-#include<set>
+#include <algorithm>
+#include <iostream>
+#include <vector>
+#include <cassert>
+#include <unordered_set>
+#include <set>
 
 #include "vc.h"
 
-Graph read_input() {
+std::pair<int, Graph> read_input() {
     std::string line;
     int phase = 0;
     int n, m, x, y;
@@ -36,12 +37,13 @@ Graph read_input() {
             phase++;
         }
     }
-    return G;
+    return {n, G};
 }
 
-void write_output(int n, const std::vector<int>& sol) {
+void write_output(int n, std::vector<int> sol) {
     std::printf("s vc %d %zu\n", n, sol.size());
+    std::sort(sol.begin(), sol.end());
     for(const int x: sol) {
-        std::printf("%d\n", x);
+        std::printf("%d\n", x+1);
     }
 }

@@ -8,6 +8,21 @@
 
 #include "vc.h"
 
+std::ostream& operator<<(std::ostream& ostr, const VC& sol) {
+    ostr << "k: " << std::get<1>(sol) << "\n";
+    ostr << std::get<0>(sol);
+    ostr << "sol: ";
+    bool first = true;
+    for(const auto el: std::get<2>(sol)) {
+        if(!first) {
+            ostr << ", ";
+        }
+        first = false;
+        ostr << el;
+    }
+    return ostr;
+}
+
 bool successfull(const VC &res) {
 	// The graph is empty and K >= 0
 	return std::get<0>(res).empty() && std::get<1>(res)>=0;

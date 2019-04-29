@@ -3,8 +3,8 @@
 
 #include "vc.h"
 
-Graph read_input();
+std::pair<int, Graph> read_input();
 
-void write_output(int n, const std::vector<int>& sol);
+void write_output(int, std::vector<int> sol);
 
 #endif
