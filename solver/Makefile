@@ -1,4 +1,4 @@
-CPPFLAGS=-g
+CPPFLAGS=-o3
 
 objects = vc.o lp.o io.o graph.o hopcroft_carp.o kernel_2k.o
 
