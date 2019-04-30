@@ -1,4 +1,4 @@
-CPPFLAGS=-o3
+CPPFLAGS=-O3 -Wc++11-extensions
 
 objects = vc.o lp.o io.o graph.o hopcroft_carp.o kernel_2k.o
 
