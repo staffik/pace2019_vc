@@ -42,7 +42,7 @@ auto get_half_ones(const Graph &G) {
 	return std::make_tuple(half, ones);
 }
 
-
+// apply LPVC OneHalf reduction -> |G'(V)| <= 2k
 VC kernel_2k_reduction(const VC &partVC) {
 	const Graph &G = std::get<0>(partVC);
 	if(G.empty()) return partVC;
@@ -63,4 +63,27 @@ VC kernel_2k_reduction(const VC &partVC) {
 		new_K = -1; // 2*K < |LPVC_opt| <= |VC_opt|
 	}
 	return std::make_tuple(induced, new_K, newPartSol);
+}
+
+int double_all_half_solution_size(const VC &LPVC) {
+	return 2*std::get<0>(LPVC).size() + std::get<2>(LPVC).size();
+}
+
+VC all_half_reduction(const VC &partVC) {
+	auto res = kernel_2k_reduction(partVC);
+
+	std::vector<int> vertices;
+	for(auto &it : std::get<0>(res)) vertices.push_back(it.first);
+	for(auto u : vertices) if(std::get<0>(res).find(u) != std::get<0>(res).end()) {
+		VC tmp = res;
+		remove_single_vertex(std::get<0>(tmp), u);
+		tmp = kernel_2k_reduction(tmp);
+		if(double_all_half_solution_size(tmp) < double_all_half_solution_size(res)) {
+			remove_single_vertex(std::get<0>(res), u);
+			std::get<1>(res)--;
+			std::get<2>(res).push_back(u);
+		}
+	}
+
+	return res;
 }

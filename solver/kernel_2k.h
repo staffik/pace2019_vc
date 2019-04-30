@@ -9,7 +9,6 @@
 
 using vi = std::vector<int>;
 
-// apply LPVC OneHalf reduction -> |G'(V)| <= 2k
-VC kernel_2k_reduction(const VC &partSol);
+VC all_half_reduction(const VC &partVC);
 
 #endif // KERNEL_2K_H

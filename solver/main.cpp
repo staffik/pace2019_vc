@@ -15,7 +15,8 @@ VC tryBranch(const VC &partVC, std::unordered_set<int> vertices);
 VC branch(VC partVC) {
     partVC = remove_high_deg_nodes(partVC);
 	partVC = remove_leaves(partVC);
-	partVC = kernel_2k_reduction(partVC);
+	//partVC = kernel_2k_reduction(partVC);
+	partVC = all_half_reduction(partVC);
 	const auto& G = std::get<0>(partVC);
 	const auto& k = std::get<1>(partVC);
 	const auto& partSol = std::get<2>(partVC);
