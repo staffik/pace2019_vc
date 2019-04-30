@@ -45,6 +45,8 @@ auto get_half_ones(const Graph &G) {
 
 VC kernel_2k_reduction(const VC &partVC) {
 	const Graph &G = std::get<0>(partVC);
+	if(G.empty()) return partVC;
+
 	int old_K = std::get<1>(partVC);
 	const auto& oldPartSol = std::get<2>(partVC);
 

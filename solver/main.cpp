@@ -13,7 +13,9 @@ VC tryBranch(const VC &partVC, std::unordered_set<int> vertices);
 
 // The branching algorithm
 VC branch(VC partVC) {
+    partVC = remove_high_deg_nodes(partVC);
 	partVC = remove_leaves(partVC);
+	partVC = kernel_2k_reduction(partVC);
 	const auto& G = std::get<0>(partVC);
 	const auto& k = std::get<1>(partVC);
 	const auto& partSol = std::get<2>(partVC);
@@ -61,9 +63,7 @@ VC tryBranch(const VC &partVC, std::unordered_set<int> vertices) {
 }
 
 VC solve(VC partVC) {
-    auto res = remove_high_deg_nodes(partVC);
-	res = remove_leaves(res);
-	res = kernel_2k_reduction(res);
+	auto res = remove_leaves(partVC);
 	res = branch(res);
 	return res;
 }
@@ -80,7 +80,6 @@ int main() {
     std::cout << max_deg(subG) << "\n";
 	*/
 
-
 	// Binary search
 	// Invariant: beg < |VC_opt| <= end
 	int beg = -1, mid, end = n;
@@ -94,6 +93,16 @@ int main() {
 			beg = mid;
 	}
 	auto res = solve({G, end, {}});
+/*
+	int end=0;
+	while(true) {
+		std::cerr <<"Solving for "<<end<<std::endl;
+		auto res = solve({G, end, {}});
+		if(successfull(res)) break;
+		end++;
+	}
+	auto res = solve({G, end, {}});
+*/
 
 	// Write output
 
