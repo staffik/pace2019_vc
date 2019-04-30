@@ -6,7 +6,7 @@
 
 #include "graph.h"
 
-typedef std::tuple<Graph, int, std::vector<int>> VC;
+typedef std::tuple<Graph, int, std::vector<int> > VC;
 
 std::ostream& operator<<(std::ostream&, const VC&);
 VC remove_high_deg_nodes(VC vc);

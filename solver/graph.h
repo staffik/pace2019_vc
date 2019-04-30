@@ -6,7 +6,7 @@
 #include <unordered_set>
 #include <vector>
 
-typedef std::unordered_map<int, std::unordered_set<int>> Graph;
+typedef std::unordered_map<int, std::unordered_set<int> > Graph;
 size_t max_deg(const Graph&);
 Graph induced_subgraph(const Graph&, const std::unordered_set<int>&);
 std::ostream& operator<<(std::ostream&, const Graph&);

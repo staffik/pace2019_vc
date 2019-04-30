@@ -40,7 +40,7 @@ VC remove_high_deg_nodes(VC vc) {
     // node to degree mapping
     std::unordered_map<int, int> node_deg;
     // degree to set of nodes mapping
-    std::map<int, std::unordered_set<int>> deg_node;
+    std::map<int, std::unordered_set<int> > deg_node;
 
     int deg;
     for(auto& it : G) {
@@ -50,7 +50,7 @@ VC remove_high_deg_nodes(VC vc) {
         deg_node[deg].insert(u);
     }
 
-    std::map<int, std::unordered_set<int>>::reverse_iterator deg_node_it;
+    std::map<int, std::unordered_set<int> >::reverse_iterator deg_node_it;
     int neigh_deg;
 
     while(true) {
@@ -106,7 +106,7 @@ VC solve_deg2(VC vc) {
     // node to degree mapping
     std::unordered_map<int, int> node_deg;
     // degree to set of nodes mapping
-    std::map<int, std::unordered_set<int>> deg_node;
+    std::map<int, std::unordered_set<int> > deg_node;
 
     int deg;
     for(size_t i = 0; i < G.size(); i++) {
@@ -192,7 +192,7 @@ VC remove_leaves(VC vc) {
     // node to degree mapping
     std::unordered_map<int, int> node_deg;
     // degree to set of nodes mapping
-    std::map<int, std::unordered_set<int>> deg_node;
+    std::map<int, std::unordered_set<int> > deg_node;
 
     int deg;
     for(size_t i = 0; i < G.size(); i++) {
