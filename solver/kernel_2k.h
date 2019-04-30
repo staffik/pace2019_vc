@@ -10,5 +10,6 @@
 using vi = std::vector<int>;
 
 VC all_half_reduction(const VC &partVC);
+VC kernel_2k_reduction(const VC &partVC);
 
 #endif // KERNEL_2K_H

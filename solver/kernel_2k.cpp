@@ -59,18 +59,28 @@ VC kernel_2k_reduction(const VC &partVC) {
 
 	newPartSol.insert(newPartSol.end(), oldPartSol.begin(), oldPartSol.end());
 
+/*
 	if(induced.size() > 2 * new_K) {
 		new_K = -1; // 2*K < |LPVC_opt| <= |VC_opt|
 	}
+	*/
 	return std::make_tuple(induced, new_K, newPartSol);
 }
 
 int double_all_half_solution_size(const VC &LPVC) {
-	return 2*std::get<0>(LPVC).size() + std::get<2>(LPVC).size();
+	return std::get<0>(LPVC).size() + 2*std::get<2>(LPVC).size();
+}
+
+bool all_half_negative_RR(const VC &vc) {
+	return std::get<0>(vc).size() > 2*std::get<1>(vc);
 }
 
 VC all_half_reduction(const VC &partVC) {
 	auto res = kernel_2k_reduction(partVC);
+	if(all_half_negative_RR(res)) {
+		std::get<1>(res) = -1;
+		return res;
+	}
 
 	std::vector<int> vertices;
 	for(auto &it : std::get<0>(res)) vertices.push_back(it.first);
@@ -78,10 +88,15 @@ VC all_half_reduction(const VC &partVC) {
 		VC tmp = res;
 		remove_single_vertex(std::get<0>(tmp), u);
 		tmp = kernel_2k_reduction(tmp);
-		if(double_all_half_solution_size(tmp) < double_all_half_solution_size(res)) {
+		if(double_all_half_solution_size(tmp) <= double_all_half_solution_size(res)-2) {
 			remove_single_vertex(std::get<0>(res), u);
 			std::get<1>(res)--;
 			std::get<2>(res).push_back(u);
+		
+			if(all_half_negative_RR(res)) {
+				std::get<1>(res) = -1;
+				return res;
+			}
 		}
 	}
 
