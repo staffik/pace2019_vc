@@ -1,9 +1,8 @@
-CPPFLAGS=-o3
+CPPFLAGS= -o3
 
-objects = vc.o io.o graph.o hopcroft_carp.o kernel_2k.o
+objects = vc.o io.o graph.o hopcroft_carp.o kernel_2k.o solve.o
 
 main: $(objects)
-solve: $(objects)
 
 graph.o: graph.h graph.cpp
 
@@ -15,5 +14,7 @@ hopcroft_carp.o: hopcroft_carp.h hopcroft_carp.cpp graph.o
 
 kernel_2k.o: kernel_2k.h kernel_2k.cpp graph.o hopcroft_carp.o
 
+solve.o: solve.h solve.cpp graph.o vc.o kernel_2k.o
+
 clean:
-	rm -f $(objects) main solve
+	rm -f $(objects) main

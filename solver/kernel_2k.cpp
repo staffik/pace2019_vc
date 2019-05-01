@@ -10,16 +10,20 @@
 #define DBG(code) code
 
 
-// returns pair of lists <do_not_get_to_solution, get_to_solution>
-auto get_half_ones(const Graph &G) {
+// returns pair <V1/2, V1>
+auto LPVC_solution(const Graph &G) {
+	// bipartite version of G
 	GraphAdj BG(G);
+
+	// calculate VC in BG
 	hopcroft_carp HC(BG);
 
-	vi V1, V2;
+	// recover LPVC solution for G
+	std::vector<int> V1, V2;
 	std::tie(V1, V2) = HC.vc;
 
 	int n = BG.n;
-	vi V(n, 0);
+	std::vector<int> V(n, 0);
 
 	for(int i=0; i<V1.size(); ++i) {
 		int v = V1[i]-1;
@@ -39,66 +43,40 @@ auto get_half_ones(const Graph &G) {
 		else if(V[v]==2)
 			ones.push_back(v);
 	}
+
 	return std::make_tuple(half, ones);
 }
 
-// apply LPVC OneHalf reduction -> |G'(V)| <= 2k
-VC kernel_2k_reduction(const VC &partVC) {
-	const Graph &G = std::get<0>(partVC);
-	if(G.empty()) return partVC;
+// apply LPVC OneHalf reduction
+void kernel_2k_reduction(Graph &G, VC &partSol) {
+	std::unordered_set<int> half_ones;
+	std::vector<int> ones;
 
-	int old_K = std::get<1>(partVC);
-	const auto& oldPartSol = std::get<2>(partVC);
+	std::tie(half_ones, ones) = LPVC_solution(G);
+	G = induced_subgraph(G, half_ones);
 
-	std::unordered_set<int> remaining;
-	std::vector<int> newPartSol;
-
-	std::tie(remaining, newPartSol) = get_half_ones(G);
-	auto induced = induced_subgraph(G, remaining);
-	int new_K = old_K - newPartSol.size();
-
-	newPartSol.insert(newPartSol.end(), oldPartSol.begin(), oldPartSol.end());
-
-/*
-	if(induced.size() > 2 * new_K) {
-		new_K = -1; // 2*K < |LPVC_opt| <= |VC_opt|
-	}
-	*/
-	return std::make_tuple(induced, new_K, newPartSol);
+	partSol.insert(partSol.end(), ones.begin(), ones.end());
 }
 
-int double_all_half_solution_size(const VC &LPVC) {
-	return std::get<0>(LPVC).size() + 2*std::get<2>(LPVC).size();
-}
+void all_half_reduction(Graph &G, VC &partVC) {
+	kernel_2k_reduction(G, partVC);
 
-bool all_half_negative_RR(const VC &vc) {
-	return std::get<0>(vc).size() > 2*std::get<1>(vc);
-}
-
-VC all_half_reduction(const VC &partVC) {
-	auto res = kernel_2k_reduction(partVC);
-	if(all_half_negative_RR(res)) {
-		std::get<1>(res) = -1;
-		return res;
-	}
+	// G is V1/2
 
 	std::vector<int> vertices;
-	for(auto &it : std::get<0>(res)) vertices.push_back(it.first);
-	for(auto u : vertices) if(std::get<0>(res).find(u) != std::get<0>(res).end()) {
-		VC tmp = res;
-		remove_single_vertex(std::get<0>(tmp), u);
-		tmp = kernel_2k_reduction(tmp);
-		if(double_all_half_solution_size(tmp) <= double_all_half_solution_size(res)-2) {
-			remove_single_vertex(std::get<0>(res), u);
-			std::get<1>(res)--;
-			std::get<2>(res).push_back(u);
-		
-			if(all_half_negative_RR(res)) {
-				std::get<1>(res) = -1;
-				return res;
-			}
+	for(auto &it : G)
+		vertices.push_back(it.first);
+
+	for(auto u : vertices) if(G.find(u) != G.end()) {
+		Graph copy = G;
+		std::vector<int> dummy;
+
+		remove_single_vertex(copy, u);
+		kernel_2k_reduction(copy, dummy);
+
+		if(copy.size() + 2*dummy.size() <= G.size()) {
+			remove_single_vertex(G, u);
+			partVC.push_back(u);
 		}
 	}
-
-	return res;
 }

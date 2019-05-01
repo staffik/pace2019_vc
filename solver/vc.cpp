@@ -8,6 +8,24 @@
 
 #include "vc.h"
 
+VC NO_instance({-1});
+VC YES_instance({});
+
+VC merge_VCs(const VC &vc1, const VC &vc2) {
+	VC res(vc2);
+	res.insert(res.end(), vc1.cbegin(), vc1.cend());
+	return res;
+}
+
+VC merge_VCs(const std::vector<VC> &vcs) {
+	VC res;
+	for(const auto& vc : vcs) {
+		res.insert(res.end(), vc.cbegin(), vc.cend());
+	}
+	return res;
+}
+
+/*
 std::ostream& operator<<(std::ostream& ostr, const VC& sol) {
     ostr << "k: " << std::get<1>(sol) << "\n";
     ostr << std::get<0>(sol);
@@ -22,20 +40,20 @@ std::ostream& operator<<(std::ostream& ostr, const VC& sol) {
     }
     return ostr;
 }
+*/
 
-bool successfull(const VC &res) {
-	// The graph is empty and K >= 0
-	return std::get<0>(res).empty() && std::get<1>(res)>=0;
+bool valid(const VC &res) {
+	return !invalid(res);
 }
 
-VC remove_high_deg_nodes(VC vc) {
-    Graph G;
-    int k;
-    std::vector<int> partial_solution;
-    std::tie(G, k, partial_solution) = vc;
+bool invalid(const VC &res) {
+	// NO instance
+	return res.size() == 1 && res[0]==-1;
+}
+
+void remove_high_deg_nodes(Graph &G, int &k, VC &partial_solution) {
     // locate the vertices with deg > k, remove all the edges between them and
     // the rest of the graph and return all those vertices. method creates a
-    // copy of the input graph
 
     // node to degree mapping
     std::unordered_map<int, int> node_deg;
@@ -54,6 +72,9 @@ VC remove_high_deg_nodes(VC vc) {
     int neigh_deg;
 
     while(true) {
+		if(deg_node.empty())
+			break;
+
         deg_node_it = deg_node.rbegin();
 
         deg = deg_node_it->first;
@@ -91,15 +112,11 @@ VC remove_high_deg_nodes(VC vc) {
         }
         deg_node[0].insert(node);
     }
-
-    return {G, k, partial_solution};
 }
 
-VC solve_deg2(VC vc) {
-    Graph G;
-    int k;
+VC solve_deg2(Graph &G) {
     std::vector<int> partial_solution;
-    std::tie(G, k, partial_solution) = vc;
+
     // solve the graph with deg <= 2. method doesn't modify the input graph
     assert(max_deg(G) <= 2);
 
@@ -139,7 +156,6 @@ VC solve_deg2(VC vc) {
             G.erase(node);
             G.erase(neigh);
             partial_solution.push_back(neigh);
-            k--;
         }
         // no leafs, just cycles
         else if(deg_node[2].size()) {
@@ -164,7 +180,6 @@ VC solve_deg2(VC vc) {
             for(const auto x: path) {
                 if(take) {
                     partial_solution.push_back(x);
-                    k--;
                 }
                 take ^= true;
             }
@@ -180,17 +195,14 @@ VC solve_deg2(VC vc) {
         }
     }
 
-    return {G, k, partial_solution};
+    return partial_solution;
 }
 
-VC remove_leaves(VC vc) {
-    Graph G;
-    int k;
-    std::vector<int> partial_solution;
-    std::tie(G, k, partial_solution) = vc;
+void remove_leaves(Graph &G, VC &partial_solution) {
 
     // node to degree mapping
     std::unordered_map<int, int> node_deg;
+
     // degree to set of nodes mapping
     std::map<int, std::unordered_set<int> > deg_node;
 
@@ -227,7 +239,6 @@ VC remove_leaves(VC vc) {
             G.erase(node);
             G.erase(neigh);
             partial_solution.push_back(neigh);
-            k--;
         }
         else {
             break;
@@ -244,6 +255,4 @@ VC remove_leaves(VC vc) {
         G.erase(x);
     }
     //std::cout << G.size() << "\n";
-
-    return {G, k, partial_solution};
 }
