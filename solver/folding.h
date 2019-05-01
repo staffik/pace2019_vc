@@ -4,4 +4,4 @@
 #include "vc.h"
 
 int find_fold_2deg(const Graph&);
-VC fold_2deg(const Graph& G, int k);
+VC fold_2deg(const Graph& G, int k, int node);
