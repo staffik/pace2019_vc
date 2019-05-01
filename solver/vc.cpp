@@ -9,6 +9,7 @@
 #include "vc.h"
 
 VC NO_instance({-1});
+VC YES_instance({});
 
 VC merge_VCs(const VC &vc1, const VC &vc2) {
 	VC res(vc2);
@@ -71,6 +72,9 @@ void remove_high_deg_nodes(Graph &G, int &k, VC &partial_solution) {
     int neigh_deg;
 
     while(true) {
+		if(deg_node.empty())
+			break;
+
         deg_node_it = deg_node.rbegin();
 
         deg = deg_node_it->first;

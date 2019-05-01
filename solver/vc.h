@@ -9,6 +9,7 @@
 typedef std::vector<int> VC;
 
 extern VC NO_instance;
+extern VC YES_instance;
 
 std::ostream& operator<<(std::ostream&, const VC&);
 void remove_high_deg_nodes(Graph &G, int &k, VC &partSol);

@@ -6,7 +6,7 @@
 #include "kernel_2k.h"
 #include "vc.h"
 
-#define DBG(code) code
+VC solve(Graph G, int min_K, int max_K);
 
 VC solve(Graph G, int k) {
 	if(k<0)
@@ -16,6 +16,12 @@ VC solve(Graph G, int k) {
 
 	// remove vertices with degree > k
 	remove_high_deg_nodes(G, k, partSol);
+
+	if(k<0)
+		return NO_instance;
+
+	if(G.empty())
+		return YES_instance;
 
 	// max_deg(G) <= k
 
@@ -29,7 +35,7 @@ VC solve(Graph G, int k) {
 	if(connected_components(G, CCs) > 1) {
 		std::vector<VC> subproblems_solution(CCs.size());
 		for(int i=0; i<CCs.size(); ++i) {
-			subproblems_solution[i] = solve(CCs[i], k);
+			subproblems_solution[i] = solve(CCs[i], 0, k);
 			if(invalid(subproblems_solution[i]))
 				return NO_instance;
 			k -= subproblems_solution[i].size();
@@ -53,24 +59,13 @@ VC solve(Graph G, int k) {
 	res = solve(G - Nu, k - Nu.size());
 	if(valid(res))
 		return merge_VCs(partSol, res);
+	else
+		return NO_instance;
 }
 
-// Solve the instance
-VC solve(Graph G) {
-	// check if G has multiple connected components
-	std::vector<Graph> CCs;
-	if(connected_components(G, CCs) > 1) {
-		std::vector<VC> subproblems_solution(CCs.size());
-		for(int i=0; i<CCs.size(); ++i) {
-			subproblems_solution[i] = solve(CCs[i]);
-		}
-		return merge_VCs(subproblems_solution);
-	}
-
-	// G is connected
-
+// Solve the instance, assume G is connected
+VC solve(Graph G, int min_K, int max_K) {
 	VC partSol;
-
 	remove_leaves(G, partSol);
 
 	// G is cyclic, and min_deg(G) >= 2
@@ -80,15 +75,15 @@ VC solve(Graph G) {
 
 	// max_deg(G) >= 3
 
-	// Invariant: min_K < VC_opt(G) <= max_K
-	int min_K=0, mid_K, max_K=G.size();
-	while(min_K + 1 < max_K) {
-		mid_K = (min_K + max_K)/2;
+	// Invariant: min_K <= VC_opt(G) <= max_K
+	int mid_K;
+	while(min_K < max_K) {
+		mid_K = (min_K + max_K - 1)/2;
 		auto res = solve(G, mid_K);
 		if(valid(res))
 			max_K = mid_K;
 		else
-			min_K = mid_K;
+			min_K = mid_K+1;
 	}
 	return merge_VCs(partSol, solve(G, max_K));
 }
@@ -102,8 +97,12 @@ int main() {
 	// Solve the instance
 	VC solution;
 	remove_loops(G, solution);
-	auto partSol = solve(G);
-	solution = merge_VCs(solution, partSol);
+
+	std::vector<Graph> CCs;
+	connected_components(G, CCs);
+	for(int i=0; i<CCs.size(); ++i) {
+		solution = merge_VCs(solution, solve(CCs[i], 0, CCs[i].size()));
+	}
 
 	// Write the output
     write_output(n, solution);
