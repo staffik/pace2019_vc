@@ -10,7 +10,7 @@ VC solve(Graph G, int min_K, int max_K);
 VC solve(Graph G, int k) {
 	if(k<0)
 		return NO_instance;
-	
+
 	VC partSol;
 
 	// remove vertices with degree > k
@@ -28,7 +28,7 @@ VC solve(Graph G, int k) {
 		return NO_instance;
 
 	// k * max_deg(G) >= |E(G)|
-	
+
 	// check if G has multiple connected components
 	std::vector<Graph> CCs;
 	if(connected_components(G, CCs) > 1) {
@@ -53,7 +53,7 @@ VC solve(Graph G, int k) {
 	auto res = solve(G-u, k-1);
 	if(valid(res)) {
 		partSol = merge_VCs(partSol, res);
-		partSol.push_back(u);
+		partSol.insert(u);
 		return partSol;
 	}
 
@@ -62,7 +62,8 @@ VC solve(Graph G, int k) {
 	res = solve(G - Nu, k - Nu.size());
 	if(valid(res)) {
 		partSol = merge_VCs(partSol, res);
-		partSol.insert(partSol.end(), Nu.begin(), Nu.end());
+		// partSol.insert(partSol.end(), Nu.begin(), Nu.end());
+		std::copy(Nu.cbegin(), Nu.cend(), std::inserter(partSol, partSol.end()));
 		return partSol;
 	}
 	else {
@@ -80,7 +81,7 @@ VC solve(Graph G, int min_K, int max_K) {
 	remove_leaves(G, partSol);
 
 	// G is cyclic, and min_deg(G) >= 2
-	
+
 	if(max_deg(G) <= 2)
 		return merge_VCs(partSol, solve_deg2(G));
 

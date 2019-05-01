@@ -13,14 +13,16 @@ VC YES_instance({});
 
 VC merge_VCs(const VC &vc1, const VC &vc2) {
 	VC res(vc2);
-	res.insert(res.end(), vc1.cbegin(), vc1.cend());
+    std::copy(vc1.cbegin(), vc1.cend(), std::inserter(res, res.end()));
+	// res.insert(res.end(), vc1.cbegin(), vc1.cend());
 	return res;
 }
 
 VC merge_VCs(const std::vector<VC> &vcs) {
 	VC res;
 	for(const auto& vc : vcs) {
-		res.insert(res.end(), vc.cbegin(), vc.cend());
+        std::copy(vc.cbegin(), vc.cend(), std::inserter(res, res.end()));
+		// res.insert(res.end(), vc.cbegin(), vc.cend());
 	}
 	return res;
 }
@@ -48,7 +50,7 @@ bool valid(const VC &res) {
 
 bool invalid(const VC &res) {
 	// NO instance
-	return res.size() == 1 && res[0]==-1;
+	return res.size() == 1 && (res.find(-1) != res.cend());
 }
 
 void remove_high_deg_nodes(Graph &G, int &k, VC &partial_solution) {
@@ -84,7 +86,8 @@ void remove_high_deg_nodes(Graph &G, int &k, VC &partial_solution) {
 
         const auto& nodes = deg_node_it->second;
         const auto node = *nodes.begin();
-        partial_solution.push_back(node);
+        // partial_solution.push_back(node);
+        partial_solution.insert(node);
         k--;
 
         // iterate neighbours
@@ -115,7 +118,7 @@ void remove_high_deg_nodes(Graph &G, int &k, VC &partial_solution) {
 }
 
 VC solve_deg2(Graph &G) {
-    std::vector<int> partial_solution;
+    VC partial_solution;
 
     // solve the graph with deg <= 2. method doesn't modify the input graph
     assert(max_deg(G) <= 2);
@@ -155,7 +158,8 @@ VC solve_deg2(Graph &G) {
             }
             G.erase(node);
             G.erase(neigh);
-            partial_solution.push_back(neigh);
+            // partial_solution.push_back(neigh);
+            partial_solution.insert(neigh);
         }
         // no leafs, just cycles
         else if(deg_node[2].size()) {
@@ -179,7 +183,8 @@ VC solve_deg2(Graph &G) {
             int take = true;
             for(const auto x: path) {
                 if(take) {
-                    partial_solution.push_back(x);
+                    // partial_solution.push_back(x);
+                    partial_solution.insert(x);
                 }
                 take ^= true;
             }
@@ -238,7 +243,8 @@ void remove_leaves(Graph &G, VC &partial_solution) {
             }
             G.erase(node);
             G.erase(neigh);
-            partial_solution.push_back(neigh);
+            // partial_solution.push_back(neigh);
+            partial_solution.insert(neigh);
         }
         else {
             break;

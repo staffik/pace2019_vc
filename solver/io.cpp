@@ -41,7 +41,8 @@ std::pair<int, Graph> read_input() {
     return {n, G};
 }
 
-void write_output(int n, std::vector<int> sol) {
+void write_output(int n, VC sol_set) {
+    std::vector<int> sol(sol_set.begin(), sol_set.end());
     std::printf("s vc %d %zu\n", n, sol.size());
     std::sort(sol.begin(), sol.end());
     for(const int x: sol) {

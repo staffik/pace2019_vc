@@ -1,7 +1,8 @@
-#include "graph.h"
 #include <assert.h>
 #include <algorithm>
 #include <queue>
+#include "graph.h"
+#include "vc.h"
 
 std::ostream& operator<<(std::ostream& ostr, const Graph& G) {
 	for(auto x: G) {
@@ -101,7 +102,7 @@ void remove_vertices(Graph& G, const std::unordered_set<int> &vertices) {
 	}
 }
 
-void remove_loops(Graph &G, std::vector<int> &partSol) {
+void remove_loops(Graph &G, VC &partSol) {
 	std::vector<int> loops;
 	for(auto &u : G) {
 		if(u.second.find(u.first) != u.second.end()) {
@@ -109,7 +110,7 @@ void remove_loops(Graph &G, std::vector<int> &partSol) {
 		}
 	}
 	for(auto u : loops) {
-		partSol.push_back(u);
+		partSol.insert(u);
 		remove_single_vertex(G, u);
 	}
 }
