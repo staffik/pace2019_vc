@@ -14,6 +14,8 @@ std::ostream& operator<<(std::ostream&, const Graph&);
 void remove_single_vertex(Graph &G, int u);
 void remove_vertices(Graph& G, std::unordered_set<int> vertices);
 Graph difference(Graph G, std::unordered_set<int> to_remove);
+std::unordered_set<int> get_connected_component(const Graph& G, int node);
+std::vector<std::unordered_set<int> > get_connected_components(const Graph&);
 
 struct GraphAdj {
 	using vi = std::vector<int>;

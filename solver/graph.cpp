@@ -1,5 +1,6 @@
 #include "graph.h"
-#include<algorithm>
+#include <algorithm>
+#include <queue>
 
 std::ostream& operator<<(std::ostream& ostr, const Graph& G) {
 	for(auto x: G) {
@@ -66,6 +67,43 @@ void remove_vertices(Graph& G, std::unordered_set<int> vertices) {
 			G.erase(node);
 		}
 	}
+}
+
+std::unordered_set<int> get_connected_component(const Graph& G, int node) {
+	std::unordered_set<int> cc = {};
+	std::queue<int> q;
+	q.push(node);
+	while(q.size()) {
+		node = q.front();
+		q.pop();
+		// if node is already visited
+		if(cc.find(node) != cc.end()) {
+			continue;
+		}
+		cc.insert(node);
+		for(const auto neigh: G.at(node)) {
+			q.push(neigh);
+		}
+	}
+	return cc;
+}
+
+std::vector<std::unordered_set<int> > get_connected_components(const Graph& G) {
+	std::unordered_set<int> visited;
+	std::vector<std::unordered_set<int> > connected_components;
+	for(const auto x: G) {
+		// if x is visited
+		auto node = x.first;
+		if(visited.find(node) != visited.end()) {
+			continue;
+		}
+		auto component = get_connected_component(G, node);
+		for(const auto node: component) {
+			visited.insert(node);
+		}
+		connected_components.push_back(component);
+	}
+	return connected_components;
 }
 
 Graph difference(Graph G, std::unordered_set<int> to_remove) {
