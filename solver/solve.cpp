@@ -9,8 +9,9 @@
 VC solve(Graph G, int min_K, int max_K);
 
 VC solve(Graph G, int k) {
-	if(k<0)
+	if(k<0) {
 		return NO_instance;
+	}
 
 	VC partSol;
 
@@ -22,6 +23,12 @@ VC solve(Graph G, int k) {
 
 	if(G.empty())
 		return YES_instance;
+
+	// 2 deg folding
+	int node = find_fold_2deg(G);
+	if(node > 0) {
+		return fold_2deg(G, k, node);
+	}
 
 	// max_deg(G) <= k
 

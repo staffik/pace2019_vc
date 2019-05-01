@@ -36,14 +36,13 @@ VC fold_2deg(const Graph& G, int k, int node) {
     int up = node;
     Graph Gp = G;
     std::vector<int> neighs;
-    for(const auto& neigh: G.at(w)) {
-        neighs.push_back(neigh);
-    }
-    for(const auto& neigh: G.at(v)) {
-        neighs.push_back(neigh);
-    }
+    std::copy(G.at(w).cbegin(), G.at(w).cend(), std::inserter(neighs, neighs.end()));
+    std::copy(G.at(v).cbegin(), G.at(v).cend(), std::inserter(neighs, neighs.end()));
     remove_vertices(Gp, {node, v, w});
     for(const auto& neigh: neighs) {
+        if(neigh == node) {
+            continue;
+        }
         Gp[up].insert(neigh);
         Gp[neigh].insert(up);
     }
