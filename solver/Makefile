@@ -10,7 +10,7 @@ vc.o: vc.h vc.cpp graph.o
 
 io.o: io.h io.cpp
 
-folding.o: folding.h folding.cpp
+folding.o: folding.h folding.cpp graph.o vc.o solve.o
 
 hopcroft_carp.o: hopcroft_carp.h hopcroft_carp.cpp graph.o
 

@@ -5,8 +5,6 @@
 #include "solve.h"
 #include "vc.h"
 
-extern VC NO_instance;
-
 int find_fold_2deg(const Graph& G){
     int u, w, v;
     for(const auto& x: G) {
