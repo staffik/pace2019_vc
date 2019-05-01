@@ -18,6 +18,7 @@ int number_of_edges(const Graph &G) {
 	int m = 0;
 	for(const auto &it : G)
 		m += it.second.size();
+	assert(m%2 == 0);
 	return m/2;
 }
 

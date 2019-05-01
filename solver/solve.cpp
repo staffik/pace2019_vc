@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include "graph.h"
-#include "io.h"
 #include "kernel_2k.h"
 #include "vc.h"
 
@@ -101,16 +100,11 @@ VC solve(Graph G, int min_K, int max_K) {
 		else
 			min_K = mid_K+1;
 	}
+
 	return merge_VCs(partSol, solve(G, max_K));
 }
 
-int main() {
-	// Read the input
-	int n;
-	Graph G;
-    std::tie(n, G) = read_input();
-
-	// Solve the instance
+VC do_solve(Graph G) {
 	VC solution;
 	remove_loops(G, solution);
 
@@ -120,8 +114,5 @@ int main() {
 		solution = merge_VCs(solution, solve(CCs[i], 0, CCs[i].size()));
 	}
 
-	// Write the output
-    write_output(n, solution);
-
-    return 0;
+	return solution;
 }

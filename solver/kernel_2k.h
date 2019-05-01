@@ -7,9 +7,8 @@
 #include "graph.h"
 #include "vc.h"
 
-using vi = std::vector<int>;
 
-VC all_half_reduction(const VC &partVC);
-VC kernel_2k_reduction(const VC &partVC);
+void all_half_reduction(Graph &G, VC &partSol);
+void kernel_2k_reduction(Graph &G, VC &partSol);
 
 #endif // KERNEL_2K_H
