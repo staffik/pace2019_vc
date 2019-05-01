@@ -6,7 +6,10 @@
 #include <unordered_set>
 #include <vector>
 
+// typedef moved due to cyclical includes breaking everything
+typedef std::unordered_set<int> VC;
 typedef std::unordered_map<int, std::unordered_set<int> > Graph;
+
 size_t max_deg(const Graph&);
 Graph induced_subgraph(const Graph&, const std::unordered_set<int>&);
 std::ostream& operator<<(std::ostream&, const Graph&);
@@ -16,7 +19,7 @@ void remove_vertices(Graph& G, const std::unordered_set<int> &vertices);
 Graph difference(Graph G, std::unordered_set<int> to_remove);
 Graph get_connected_component(const Graph& G, int node);
 int connected_components(const Graph &G, std::vector<Graph> &CCs);
-void remove_loops(Graph &G, std::vector<int> &partSol);
+void remove_loops(Graph &G, VC &partSol);
 int number_of_edges(const Graph &G);
 int highest_degree_vertex(const Graph &G);
 

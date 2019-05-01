@@ -11,10 +11,10 @@ int find_fold_2deg(const Graph& G){
     int u, w, v;
     for(const auto& x: G) {
         u = x.first;
-        if(G.at(u).size != 2) {
+        if(G.at(u).size() != 2) {
             continue;
         }
-        const auto& it = G.at(u).cbegin();
+        auto it = G.at(u).cbegin();
         v = *it;
         ++it;
         w = *it;

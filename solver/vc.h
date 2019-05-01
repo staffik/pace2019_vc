@@ -1,15 +1,14 @@
-#ifndef VC_CPP
-#define VC_CPP
+#ifndef VC_H
+#define VC_H
 
 #include <iostream>
-#include <vector>
 
 #include "graph.h"
 
-typedef std::vector<int> VC;
-
 extern VC NO_instance;
 extern VC YES_instance;
+
+// typedef moved due to cyclical includes breaking everything
 
 std::ostream& operator<<(std::ostream&, const VC&);
 void remove_high_deg_nodes(Graph &G, int &k, VC &partSol);
