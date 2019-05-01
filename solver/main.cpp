@@ -4,7 +4,6 @@
 #include "graph.h"
 #include "io.h"
 #include "kernel_2k.h"
-#include "lp.h"
 #include "vc.h"
 
 #define DBG(code) code
