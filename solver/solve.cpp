@@ -107,11 +107,15 @@ VC solve(Graph G, int min_K, int max_K) {
 VC do_solve(Graph G) {
 	VC solution;
 	remove_loops(G, solution);
+	//kernel_2k_reduction(G, solution);
+	//all_half_reduction(G, solution);
 
 	std::vector<Graph> CCs;
 	connected_components(G, CCs);
 	for(int i=0; i<CCs.size(); ++i) {
-		solution = merge_VCs(solution, solve(CCs[i], 0, CCs[i].size()));
+		kernel_2k_reduction(CCs[i], solution);
+		int n = CCs[i].size();
+		solution = merge_VCs(solution, solve(CCs[i], n/2, n));
 	}
 
 	return solution;
