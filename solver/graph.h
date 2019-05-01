@@ -12,6 +12,7 @@ Graph induced_subgraph(const Graph&, const std::unordered_set<int>&);
 std::ostream& operator<<(std::ostream&, const Graph&);
 
 void remove_single_vertex(Graph &G, int u);
+void remove_vertices(Graph& G, std::unordered_set<int> vertices);
 Graph difference(Graph G, std::unordered_set<int> to_remove);
 
 struct GraphAdj {

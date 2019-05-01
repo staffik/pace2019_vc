@@ -43,6 +43,31 @@ void remove_single_vertex(Graph &G, int u) {
 	G.erase(u);
 }
 
+void remove_vertices(Graph& G, std::unordered_set<int> vertices) {
+	std::vector<int> keys;
+	for(const auto& x: G) {
+		keys.push_back(x.first);
+	}
+	for(const auto& node: keys) {
+		if(vertices.find(node) != vertices.end()) {
+			G.erase(node);
+			continue;
+		}
+		std::vector<int> to_delete;
+		for(const auto neigh: G[node]) {
+			if(vertices.find(neigh) != vertices.end()) {
+				to_delete.push_back(neigh);
+			}
+		}
+		for(auto x: to_delete) {
+			G[node].erase(x);
+		}
+		if(G[node].empty()) {
+			G.erase(node);
+		}
+	}
+}
+
 Graph difference(Graph G, std::unordered_set<int> to_remove) {
 	for(auto u : to_remove)
 		remove_single_vertex(G, u);
