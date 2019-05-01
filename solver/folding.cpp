@@ -34,6 +34,7 @@ VC fold_2deg(const Graph& G, int k, int node) {
     int v = *it;
     ++it;
     int w = *it;
+    assert(G.at(v).find(w) == G.at(v).end());
     int up = node;
     Graph Gp = G;
     std::vector<int> neighs;
@@ -48,19 +49,18 @@ VC fold_2deg(const Graph& G, int k, int node) {
         Gp[up].insert(neigh);
         Gp[neigh].insert(up);
     }
-    // return {};
     auto sol = solve(Gp, k-1);
     // check if produced a solution
     if(sol != NO_instance) {
         // if up in solution
 
-        // if(sol.find(up) != sol.cend()) {
-        //     sol.erase(up);
-        //     sol.insert(v);
-        //     sol.insert(w);
-        // } else {
-        //     sol.insert(node);
-        // }
+        if(sol.find(up) != sol.cend()) {
+            sol.erase(up);
+            sol.insert(v);
+            sol.insert(w);
+        } else {
+            sol.insert(node);
+        }
 
         return sol;
     } else {

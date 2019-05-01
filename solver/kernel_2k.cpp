@@ -55,7 +55,8 @@ void kernel_2k_reduction(Graph &G, VC &partSol) {
 	std::tie(half_ones, ones) = LPVC_solution(G);
 	G = induced_subgraph(G, half_ones);
 
-	partSol.insert(partSol.end(), ones.begin(), ones.end());
+	// partSol.insert(partSol.end(), ones.begin(), ones.end());
+	std::copy(ones.begin(), ones.end(), std::inserter(partSol, partSol.end()));
 }
 
 void all_half_reduction(Graph &G, VC &partVC) {
@@ -69,14 +70,14 @@ void all_half_reduction(Graph &G, VC &partVC) {
 
 	for(auto u : vertices) if(G.find(u) != G.end()) {
 		Graph copy = G;
-		std::vector<int> dummy;
+		VC dummy;
 
 		remove_single_vertex(copy, u);
 		kernel_2k_reduction(copy, dummy);
 
 		if(copy.size() + 2*dummy.size() <= G.size()) {
 			remove_single_vertex(G, u);
-			partVC.push_back(u);
+			partVC.insert(u);
 		}
 	}
 }

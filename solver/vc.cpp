@@ -13,7 +13,7 @@ VC YES_instance({});
 
 VC merge_VCs(const VC &vc1, const VC &vc2) {
 	VC res(vc2);
-    std::copy(vc1.begin(), vc1.end(), std::inserter(res, res.end()));
+    std::copy(vc1.cbegin(), vc1.cend(), std::inserter(res, res.end()));
 	// res.insert(res.end(), vc1.cbegin(), vc1.cend());
 	return res;
 }
@@ -21,7 +21,7 @@ VC merge_VCs(const VC &vc1, const VC &vc2) {
 VC merge_VCs(const std::vector<VC> &vcs) {
 	VC res;
 	for(const auto& vc : vcs) {
-        std::copy(vc.begin(), vc.end(), std::inserter(res, res.end()));
+        std::copy(vc.cbegin(), vc.cend(), std::inserter(res, res.end()));
 		// res.insert(res.end(), vc.cbegin(), vc.cend());
 	}
 	return res;
