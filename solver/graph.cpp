@@ -159,7 +159,7 @@ Graph difference(Graph G, std::unordered_set<int> to_remove) {
 
 // assume G is 0 based, constructed graph is 1-based
 GraphAdj::GraphAdj(const Graph &G) {
-	n = -1;
+	n = 0;
 	for(const auto& x: G) {
 		n = std::max(n, x.first+1);
 	}

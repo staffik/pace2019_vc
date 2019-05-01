@@ -75,7 +75,7 @@ void all_half_reduction(Graph &G, VC &partVC) {
 		remove_single_vertex(copy, u);
 		kernel_2k_reduction(copy, dummy);
 
-		if(copy.size() + 2*dummy.size() <= G.size()) {
+		if(copy.size() + 2*dummy.size() <= G.size() - 2) {
 			remove_single_vertex(G, u);
 			partVC.insert(u);
 		}
