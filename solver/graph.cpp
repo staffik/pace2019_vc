@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <assert.h>
 #include <algorithm>
 #include <queue>
 
@@ -13,12 +14,42 @@ std::ostream& operator<<(std::ostream& ostr, const Graph& G) {
 	return ostr;
 }
 
+int number_of_edges(const Graph &G) {
+	int m = 0;
+	for(const auto &it : G)
+		m += it.second.size();
+	return m/2;
+}
+
+int highest_degree_vertex(const Graph &G) {
+	assert(!G.empty());
+	auto it = G.cbegin();
+	int res=it->first, deg = it->second.size();
+	for(auto &it : G) {
+		if(it.second.size()>deg) {
+			deg = it.second.size();
+			res = it.first;
+		}
+	}
+	return res;
+}
+
 size_t max_deg(const Graph& G) {
 	size_t res = 0;
 	for(auto x: G) {
 		res = std::max(res, x.second.size());
 	}
 	return res;
+}
+
+Graph operator-(Graph G, int u) {
+	remove_single_vertex(G, u);
+	return G;
+}
+
+Graph operator-(Graph G, const std::unordered_set<int> &vertices) {
+	remove_vertices(G, vertices);
+	return G;
 }
 
 Graph induced_subgraph(const Graph& G, const std::unordered_set<int>& vertices) {
@@ -44,7 +75,7 @@ void remove_single_vertex(Graph &G, int u) {
 	G.erase(u);
 }
 
-void remove_vertices(Graph& G, std::unordered_set<int> vertices) {
+void remove_vertices(Graph& G, const std::unordered_set<int> &vertices) {
 	std::vector<int> keys;
 	for(const auto& x: G) {
 		keys.push_back(x.first);
@@ -69,8 +100,21 @@ void remove_vertices(Graph& G, std::unordered_set<int> vertices) {
 	}
 }
 
-std::unordered_set<int> get_connected_component(const Graph& G, int node) {
-	std::unordered_set<int> cc = {};
+void remove_loops(Graph &G, std::vector<int> &partSol) {
+	std::vector<int> loops;
+	for(auto &u : G) {
+		if(u.second.find(u.first) != u.second.end()) {
+			loops.push_back(u.first);
+		}
+	}
+	for(auto u : loops) {
+		partSol.push_back(u);
+		remove_single_vertex(G, u);
+	}
+}
+
+Graph get_connected_component(const Graph& G, int node) {
+	Graph cc;
 	std::queue<int> q;
 	q.push(node);
 	while(q.size()) {
@@ -80,17 +124,16 @@ std::unordered_set<int> get_connected_component(const Graph& G, int node) {
 		if(cc.find(node) != cc.end()) {
 			continue;
 		}
-		cc.insert(node);
-		for(const auto neigh: G.at(node)) {
+		cc[node] = G.at(node);
+		for(auto neigh: G.at(node)) {
 			q.push(neigh);
 		}
 	}
 	return cc;
 }
 
-std::vector<std::unordered_set<int> > get_connected_components(const Graph& G) {
+int connected_components(const Graph& G, std::vector<Graph> &CCs) {
 	std::unordered_set<int> visited;
-	std::vector<std::unordered_set<int> > connected_components;
 	for(const auto x: G) {
 		// if x is visited
 		auto node = x.first;
@@ -98,12 +141,12 @@ std::vector<std::unordered_set<int> > get_connected_components(const Graph& G) {
 			continue;
 		}
 		auto component = get_connected_component(G, node);
-		for(const auto node: component) {
-			visited.insert(node);
+		for(const auto &node: component) {
+			visited.insert(node.first);
 		}
-		connected_components.push_back(component);
+		CCs.push_back(component);
 	}
-	return connected_components;
+	return CCs.size();
 }
 
 Graph difference(Graph G, std::unordered_set<int> to_remove) {

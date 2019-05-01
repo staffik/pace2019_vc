@@ -6,13 +6,20 @@
 
 #include "graph.h"
 
-typedef std::tuple<Graph, int, std::vector<int> > VC;
+typedef std::vector<int> VC;
+
+extern VC NO_instance;
 
 std::ostream& operator<<(std::ostream&, const VC&);
-VC remove_high_deg_nodes(VC vc);
+void remove_high_deg_nodes(Graph &G, int &k, VC &partSol);
 
-bool successfull(const VC &res);
-VC solve_deg2(VC vc);
-VC remove_leaves(VC);
+bool valid(const VC &res);
+bool invalid(const VC &res);
+
+VC solve_deg2(Graph &G);
+void remove_leaves(Graph&, VC&);
+
+VC merge_VCs(const VC &vc1, const VC &vc2);
+VC merge_VCs(const std::vector<VC> &vcs);
 
 #endif

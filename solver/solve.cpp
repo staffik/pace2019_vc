@@ -9,11 +9,13 @@
 #define DBG(code) code
 
 VC solve(Graph G, int k) {
-	if(is_invalid(G, k))
+	if(k<0)
 		return NO_instance;
+	
+	VC partSol;
 
 	// remove vertices with degree > k
-	remove_high_degree_vertices(G, k);
+	remove_high_deg_nodes(G, k, partSol);
 
 	// max_deg(G) <= k
 
@@ -25,29 +27,32 @@ VC solve(Graph G, int k) {
 	// check if G has multiple connected components
 	std::vector<Graph> CCs;
 	if(connected_components(G, CCs) > 1) {
-		vector<VC> subproblems_solution(CCs.size());
+		std::vector<VC> subproblems_solution(CCs.size());
 		for(int i=0; i<CCs.size(); ++i) {
 			subproblems_solution[i] = solve(CCs[i], k);
+			if(invalid(subproblems_solution[i]))
+				return NO_instance;
 			k -= subproblems_solution[i].size();
 		}
-		return merge_VCs(subproblems_solution);
+		return merge_VCs(partSol, merge_VCs(subproblems_solution));
 	}
 
 	// G is connected, and 2 <= degree <= k, and k * max_deg(G) >= |E(G)|
-
 
 	// Branching
 
 	int u = highest_degree_vertex(G);
 
 	// branch on u
-	auto res = Solve(G-u, k-1);
+	auto res = solve(G-u, k-1);
 	if(valid(res))
-		return std::move(res);
+		return merge_VCs(partSol, res);
 
 	// branch on N[u]
-	auto Nu = neighbors(u, G);
-	return Solve(G - Nu, k - Nu.size());
+	auto Nu = G[u];
+	res = solve(G - Nu, k - Nu.size());
+	if(valid(res))
+		return merge_VCs(partSol, res);
 }
 
 // Solve the instance
@@ -55,7 +60,7 @@ VC solve(Graph G) {
 	// check if G has multiple connected components
 	std::vector<Graph> CCs;
 	if(connected_components(G, CCs) > 1) {
-		vector<VC> subproblems_solution(CCs.size());
+		std::vector<VC> subproblems_solution(CCs.size());
 		for(int i=0; i<CCs.size(); ++i) {
 			subproblems_solution[i] = solve(CCs[i]);
 		}
@@ -64,12 +69,14 @@ VC solve(Graph G) {
 
 	// G is connected
 
-	remove_small_degree_vertices(G);
+	VC partSol;
+
+	remove_leaves(G, partSol);
 
 	// G is cyclic, and min_deg(G) >= 2
 	
 	if(max_deg(G) <= 2)
-		return solve_max_deg2(G);
+		return merge_VCs(partSol, solve_deg2(G));
 
 	// max_deg(G) >= 3
 
@@ -83,7 +90,7 @@ VC solve(Graph G) {
 		else
 			min_K = mid_K;
 	}
-	return solve(G, max_K);
+	return merge_VCs(partSol, solve(G, max_K));
 }
 
 int main() {
@@ -93,9 +100,10 @@ int main() {
     std::tie(n, G) = read_input();
 
 	// Solve the instance
-	auto partSol1 = remove_loops(G);
-	auto partSol2 = solve(G);
-	auto solution = merge_VCs(partSol1, partSol2);
+	VC solution;
+	remove_loops(G, solution);
+	auto partSol = solve(G);
+	solution = merge_VCs(solution, partSol);
 
 	// Write the output
     write_output(n, solution);
