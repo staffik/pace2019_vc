@@ -35,6 +35,7 @@ VC solve(Graph G, int k) {
 	if(connected_components(G, CCs) > 1) {
 		std::vector<VC> subproblems_solution(CCs.size());
 		for(int i=0; i<CCs.size(); ++i) {
+			//subproblems_solution[i] = solve(CCs[i], k);
 			subproblems_solution[i] = solve(CCs[i], 0, k);
 			if(invalid(subproblems_solution[i]))
 				return NO_instance;
@@ -51,20 +52,31 @@ VC solve(Graph G, int k) {
 
 	// branch on u
 	auto res = solve(G-u, k-1);
-	if(valid(res))
-		return merge_VCs(partSol, res);
+	if(valid(res)) {
+		partSol = merge_VCs(partSol, res);
+		partSol.push_back(u);
+		return partSol;
+	}
 
 	// branch on N[u]
 	auto Nu = G[u];
 	res = solve(G - Nu, k - Nu.size());
-	if(valid(res))
-		return merge_VCs(partSol, res);
-	else
+	if(valid(res)) {
+		partSol = merge_VCs(partSol, res);
+		partSol.insert(partSol.end(), Nu.begin(), Nu.end());
+		return partSol;
+	}
+	else {
 		return NO_instance;
+	}
 }
 
+int dummy_cnt;
 // Solve the instance, assume G is connected
 VC solve(Graph G, int min_K, int max_K) {
+	bool first_call (dummy_cnt==0);
+	++dummy_cnt;
+
 	VC partSol;
 	remove_leaves(G, partSol);
 
@@ -79,6 +91,10 @@ VC solve(Graph G, int min_K, int max_K) {
 	int mid_K;
 	while(min_K < max_K) {
 		mid_K = (min_K + max_K - 1)/2;
+
+		if(first_call)
+			std::cerr<<"Solving for "<<mid_K<<std::endl;
+
 		auto res = solve(G, mid_K);
 		if(valid(res))
 			max_K = mid_K;
