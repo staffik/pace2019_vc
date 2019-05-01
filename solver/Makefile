@@ -1,6 +1,6 @@
 CPPFLAGS= -o3 -g
 
-objects = vc.o io.o graph.o hopcroft_carp.o kernel_2k.o solve.o folding.o
+objects = vc.o io.o graph.o hopcroft_carp.o kernel_2k.o solve.o folding.o validate.o
 
 main: $(objects)
 
@@ -9,6 +9,8 @@ graph.o: graph.h graph.cpp
 vc.o: vc.h vc.cpp graph.o
 
 io.o: io.h io.cpp
+
+validate.o: validate.h validate.cpp vc.o graph.o
 
 folding.o: folding.h folding.cpp graph.o vc.o solve.o
 
