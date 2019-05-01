@@ -7,6 +7,24 @@
 
 extern VC NO_instance;
 
+int find_fold_2deg(const Graph& G){
+    int u, w, v;
+    for(const auto& x: G) {
+        u = x.first;
+        if(G.at(u).size != 2) {
+            continue;
+        }
+        const auto& it = G.at(u).cbegin();
+        v = *it;
+        ++it;
+        w = *it;
+        if(G.at(v).find(w) == G.at(v).cend()) {
+            return u;
+        }
+    }
+    return -1;
+}
+
 VC fold_2deg(const Graph& G, int k, int node) {
     // ensure deg(node) == 2
     assert(G.at(node).size() == 2);
