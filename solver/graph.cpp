@@ -69,7 +69,8 @@ Graph induced_subgraph(const Graph& G, const std::unordered_set<int>& vertices) 
 }
 
 void remove_single_vertex(Graph &G, int u) {
-	for(auto v : G[u]) {
+	auto neighbors = G.at(u);
+	for(auto v : neighbors) {
 		G[v].erase(u);
 		if(G[v].empty())
 			G.erase(v);

@@ -9,9 +9,8 @@
 VC solve(Graph G, int min_K, int max_K);
 
 VC solve(Graph G, int k) {
-	if(k<0) {
+	if(k<0)
 		return NO_instance;
-	}
 
 	VC partSol;
 
