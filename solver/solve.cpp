@@ -23,12 +23,6 @@ VC solve(Graph G, int k) {
 	if(G.empty())
 		return YES_instance;
 
-	// 2 deg folding
-	int node = find_fold_2deg(G);
-	if(node > 0) {
-		return fold_2deg(G, k, node);
-	}
-
 	// max_deg(G) <= k
 
 	if(k * max_deg(G) < number_of_edges(G))
@@ -115,8 +109,8 @@ VC solve(Graph G, int min_K, int max_K) {
 	while(min_K < max_K) {
 		mid_K = (min_K + max_K - 1)/2;
 
-		if(first_call)
-			std::cerr<<"Solving for "<<mid_K<<std::endl;
+		//if(first_call)
+		//	std::cerr<<"Solving for "<<mid_K<<std::endl;
 
 		auto res = solve(G, mid_K);
 		if(valid(res))
@@ -129,6 +123,7 @@ VC solve(Graph G, int min_K, int max_K) {
 }
 
 VC do_solve(Graph G) {
+	int ti = time(NULL);
 	VC solution;
 	remove_loops(G, solution);
 	//kernel_2k_reduction(G, solution);
@@ -137,9 +132,12 @@ VC do_solve(Graph G) {
 	std::vector<Graph> CCs;
 	connected_components(G, CCs);
 	for(int i=0; i<CCs.size(); ++i) {
+		kernel_2k_reduction(CCs[i], solution);
 		int n = CCs[i].size();
 		solution = merge_VCs(solution, solve(CCs[i], n/2, n));
 	}
+	ti = time(NULL) - ti;
+	//std::cerr << "Solved in "<<ti<<std::endl;
 
 	return solution;
 }
